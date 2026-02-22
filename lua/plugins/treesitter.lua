@@ -17,10 +17,17 @@ return {
 			"vim",
 			"vimdoc",
 			"query",
+
 			"javascript",
 			"typescript",
+			"jsx",
 			"tsx",
-			"php",
+			"css",
+
+			"html",
+			"markdown",
+			"markdown_inline",
+			"latex",
 		})
 
 		local group = vim.api.nvim_create_augroup("UserTreesitter", { clear = true })

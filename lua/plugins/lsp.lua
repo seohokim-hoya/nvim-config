@@ -30,6 +30,8 @@ local servers = {
 	"tailwindcss",
 	-- [Check Typos]
 	"typos_lsp",
+	-- [LaTeX]
+	"texlab",
 }
 
 return {

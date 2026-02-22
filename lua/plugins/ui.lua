@@ -1,128 +1,24 @@
 -- lua/plugins/ui.lua
 return {
-	-- Better messages/cmdline/popup UI
-	{
-		"folke/noice.nvim",
-		event = "VeryLazy",
-		dependencies = {
-			"MunifTanjim/nui.nvim",
-			"rcarriga/nvim-notify",
-		},
-		opts = {
-			lsp = {
-				override = {
-					["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-					["vim.lsp.util.stylize_markdown"] = true,
-					["cmp.entry.get_documentation"] = true,
-				},
-			},
-			routes = {
-				{
-					filter = {
-						event = "msg_show",
-						any = {
-							{ find = "%d+L, %d+B" },
-							{ find = "; after #%d+" },
-							{ find = "; before #%d+" },
-						},
-					},
-					view = "mini",
-				},
-			},
-			presets = {
-				bottom_search = true,
-				command_palette = true,
-				long_message_to_split = true,
-			},
-		},
-		keys = {
-			{ "<leader>sn", "", desc = "+noice" },
-			{
-				"<S-Enter>",
-				function()
-					require("noice").redirect(vim.fn.getcmdline())
-				end,
-				mode = "c",
-				desc = "Redirect Cmdline",
-			},
-			{
-				"<leader>snl",
-				function()
-					require("noice").cmd("last")
-				end,
-				desc = "Noice Last Message",
-			},
-			{
-				"<leader>snh",
-				function()
-					require("noice").cmd("history")
-				end,
-				desc = "Noice History",
-			},
-			{
-				"<leader>sna",
-				function()
-					require("noice").cmd("all")
-				end,
-				desc = "Noice All",
-			},
-			{
-				"<leader>snd",
-				function()
-					require("noice").cmd("dismiss")
-				end,
-				desc = "Dismiss All",
-			},
-			{
-				"<leader>snt",
-				function()
-					require("noice").cmd("pick")
-				end,
-				desc = "Noice Picker",
-			},
-
-			-- 스크롤 키가 거슬리면 mode를 {"n","s"}로 줄여도 됨
-			{
-				"<c-f>",
-				function()
-					if not require("noice.lsp").scroll(4) then
-						return "<c-f>"
-					end
-				end,
-				silent = true,
-				expr = true,
-				mode = { "i", "n", "s" },
-				desc = "Scroll Forward",
-			},
-			{
-				"<c-b>",
-				function()
-					if not require("noice.lsp").scroll(-4) then
-						return "<c-b>"
-					end
-				end,
-				silent = true,
-				expr = true,
-				mode = { "i", "n", "s" },
-				desc = "Scroll Backward",
-			},
-		},
-		config = function(_, opts)
-			if vim.o.filetype == "lazy" then
-				vim.cmd([[messages clear]])
-			end
-			require("noice").setup(opts)
-		end,
-	},
-
 	-- Notifications
 	{
 		"rcarriga/nvim-notify",
 		opts = {
-			timeout = 1000,
-			render = "compact",
+			timeout = 3000,
+			render = "default",
 			stages = "static",
 		},
+		config = function(_, opts)
+			local notify = require("notify")
+			notify.setup(opts)
+			vim.notify = function(msg, level, o)
+				if level == vim.log.levels.ERROR then
+					o = o or {}
+					o.timeout = 0
+				end
+				notify(msg, level, o)
+			end
+		end,
 	},
 
 	-- Buffer line (중복 config 제거)

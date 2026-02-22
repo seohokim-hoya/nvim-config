@@ -102,11 +102,10 @@ return {
 			"nvim-lua/plenary.nvim",
 			"nvim-treesitter/nvim-treesitter",
 			"antoinemadec/FixCursorHold.nvim",
+			"nvim-neotest/nvim-nio",
 			"nvim-neotest/neotest-jest",
-			-- 필요하면 추가:
-			-- "nvim-neotest/neotest-python",
-			-- "rouge8/neotest-rust",
-			-- PHP는 프로젝트/프레임워크에 따라 선택이 갈려서 일단 비워둠
+			"nvim-neotest/neotest-python",
+			"rouge8/neotest-rust",
 		},
 		keys = {
 			{
