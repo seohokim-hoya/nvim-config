@@ -1,17 +1,81 @@
-# Neovim 설정 (Lazy.nvim 기반)
+# Neovim Config (lazy.nvim + Neovim 0.11+)
 
-이 저장소는 개인용 Neovim 설정입니다. `init.lua`에서 `lua/config/*`와 `lua/plugins/*`를 불러오며, 플러그인 관리는 **lazy.nvim**을 사용합니다.
+[Korean Version](./README.ko.md)
 
-## 개요
+---
 
-- 리더 키: `,`
-- 로컬 리더 키: `;`
-- 기본 UI: 상대 줄번호, 커서라인, 전역 상태줄(`laststatus=3`)
-- 테마: `cyberdream`
-- 클립보드: WSL + `win32yank.exe` 연동
-- LSP 구성: Neovim **0.11+** API(`vim.lsp.config`, `vim.lsp.enable`) 기준
+Personal Neovim configuration with modular Lua files, lazy-loaded plugins, and pinned plugin versions. 
 
-## 폴더 구조
+
+- **Leader**: `,`
+- **Local leader**: `;`
+- **Colorscheme**: `cyberdream` (transparent)
+- **Plugin manager**: `lazy.nvim`
+- **LSP style**: Neovim **0.11+** (`vim.lsp.config`, `vim.lsp.enable`)
+
+---
+
+## Overview
+
+This config is split into:
+
+- `lua/config/*` for editor behavior (options, autocmds, keybinds, clipboard, lazy bootstrap)
+- `lua/plugins/*` for plugin specs by domain
+- `lua/utils/*` for helpers
+
+Goals:
+
+- fast startup via lazy loading
+- practical IDE workflow (LSP, formatting, diagnostics, tests, debug, git, sessions)
+- reproducible plugin versions via `lazy-lock.json`
+
+---
+
+## Requirements
+
+### Required
+
+- Neovim **0.11+**
+- `git`
+
+### Common dependencies
+
+- `make` (e.g. `telescope-fzf-native`, LuaSnip jsregexp build)
+- `npm` (`markdown-preview.nvim` build)
+- Clipboard backend:
+  - WSL: `win32yank.exe`
+  - Linux Wayland: `wl-copy` + `wl-paste`
+  - Linux X11 fallback: `xclip`
+
+### Optional tools used by configured plugins
+
+- `zathura` (vimtex viewer)
+- `xxd` (hex.nvim)
+- `gio trash` (nvim-genghis on Linux)
+
+---
+
+## Installation
+
+```bash
+# Optional backup
+mv ~/.config/nvim ~/.config/nvim.bak.$(date +%s) 2>/dev/null || true
+
+# Clone
+git clone <REPO_URL> ~/.config/nvim
+
+# First run (lazy.nvim bootstraps automatically)
+nvim
+```
+
+Then check:
+
+- `:Lazy`
+- `:Mason`
+
+---
+
+## Structure
 
 ```text
 .
@@ -29,7 +93,11 @@
     │   ├── colors.lua
     │   ├── editor.lua
     │   ├── ide.lua
+    │   ├── latex.lua
+    │   ├── lazygit.lua
     │   ├── lsp.lua
+    │   ├── markdown-preview.lua
+    │   ├── noice.lua
     │   ├── oneliner.lua
     │   ├── telescope.lua
     │   ├── toggleterm.lua
@@ -40,90 +108,140 @@
         └── keyMapper.lua
 ```
 
-## 주요 구성
+---
 
-### 1) 편집/탐색
+## Key Modules
 
-- 파일 트리: `neo-tree`
-- 빠른 이동: `flash.nvim`
-- 키 힌트: `which-key`
-- 버퍼/탭 UX: `bufferline`
-- 검색: `telescope`(+ `telescope-fzf-native`)
+- `init.lua`: leader/localleader + loads all core modules
+- `lua/config/options.lua`: base editor options
+- `lua/config/autocmds.lua`:
+  - wraps markdown/text automatically
+  - syncs `+` register into unnamed register on `FocusGained`
+  - maps `.sage` extension to `python` filetype
+- `lua/config/clipboard.lua`: OS-aware clipboard provider setup
+- `lua/config/keybinds.lua`: global keymaps
+- `lua/config/lazy.lua`: lazy.nvim bootstrap + plugin import
+- `lua/plugins/lsp.lua`: Mason/LSP setup, diagnostics style, conform formatters, `:Format`
+- `lua/plugins/treesitter.lua`: parser install + big-file guard + fold/indent integration
+- `lua/utils/keyMapper.lua`: flexible wrapper around `vim.keymap.set`
+- `lua/utils/debug.lua`: dump and memory/extmark debug helpers
 
-### 2) 코딩 보조
+---
 
-- 자동완성: `nvim-cmp` + `LuaSnip` + `friendly-snippets`
-- 리팩토링: `refactoring.nvim`
-- 주석/문서 템플릿: `neogen`
-- 괄호/서라운드: `mini.pairs`, `nvim-surround`
-- 멀티커서: `multicursors.nvim`
+## Key Mappings (selected)
 
-### 3) LSP/포매터
+> `<leader>` is `,`
 
-- 패키지 관리: `mason.nvim`, `mason-lspconfig.nvim`
-- LSP: `nvim-lspconfig`
-- 포맷터: `conform.nvim`
-- 기본 설치 서버(요약): Lua/Python/C/CMake/TS/JS/Rust/YAML/JSON/TOML/Bash/Tailwind 등
+| Key | Action |
+|---|---|
+| `<C-j>`, `<C-k>` | next/previous diagnostic |
+| `<leader>de` | diagnostic float |
+| `<C-p>` | focus Neo-tree |
+| `<leader>fe`, `<leader>fE` | Neo-tree root/cwd explorer |
+| `<leader>ff`, `<leader>fg` | Telescope find files/live grep |
+| `<leader>fb`, `<leader>fh` | Telescope buffers/help tags |
+| `<leader>xx` | Trouble diagnostics |
+| `<leader>ghs`, `<leader>ghr`, `<leader>ghp` | stage/reset/preview hunk |
+| `<leader>gd`, `<leader>gD` | Diffview open/file history |
+| `<leader>gg`, `<leader>lg` | Neogit/LazyGit |
+| `<leader>tt`, `<leader>tT` | neotest nearest/file |
+| `<F5>`, `<F10>`, `<F11>`, `<F12>` | DAP continue/step over/into/out |
+| `<leader>db`, `<leader>dB` | toggle/conditional breakpoint |
+| `<leader>fo` | format (`:Format`) |
+| `<leader>z` | Zen mode |
+| `<leader>qs`, `<leader>ql`, `<leader>qd` | restore session/last/stop saving |
 
-### 4) IDE 기능
+---
 
-- 진단 패널: `trouble.nvim`
-- Git: `gitsigns`, `diffview`, `neogit`, `vim-fugitive`
-- 테스트: `neotest`(Jest/Python/Rust 어댑터 포함)
-- 디버깅: `nvim-dap`, `nvim-dap-ui`, `nvim-dap-virtual-text`
-- 작업 실행: `overseer.nvim`
-- 세션 복원: `persistence.nvim`
+## Plugin Highlights
 
-### 5) UI/시각 효과
+### Editing & navigation
 
-- 메시지/팝업: `noice.nvim`, `nvim-notify`
-- 상태줄: `lualine`
-- 포커스 모드: `zen-mode`
-- 비활성 창 디밍: `vimade`
-- 컬러 코드 하이라이트: `nvim-highlight-colors`
+- `neo-tree`, `telescope`, `flash.nvim`, `which-key`
+- `bufferline`, `winshift`, `aerial`, `nvim-genghis`, `hex.nvim`
 
-## 자주 쓰는 키맵 (일부)
+### Coding productivity
 
-- 진단 이동: `<C-j>`, `<C-k>`
-- 진단 플로트: `<leader>de`
-- 파일 트리 포커스: `<C-p>`
-- Telescope: `<leader>ff`(파일), `<leader>fg`(문자열)
-- Trouble 진단: `<leader>xx`
-- 테스트 실행: `<leader>tt`(근처), `<leader>tT`(파일)
-- DAP: `<F5>` 실행, `<F10>/<F11>/<F12>` 스텝
+- `nvim-cmp` + `LuaSnip` + `friendly-snippets`
+- `neogen`, `refactoring.nvim`, `multicursors.nvim`
+- `nvim-surround`, `mini.pairs`, `mini.bracketed`
 
-> 참고: 키맵은 개인 워크플로우 기준이라 환경에 따라 조정이 필요할 수 있습니다.
+### IDE workflow
 
-## 설치/적용
+- diagnostics/issues: `trouble.nvim`
+- git: `gitsigns`, `diffview`, `neogit`, `vim-fugitive`, `lazygit.nvim`
+- testing: `neotest`
+- debugging: `nvim-dap`, `nvim-dap-ui`, `nvim-dap-virtual-text`
+- task/session: `overseer.nvim`, `persistence.nvim`
+- TODO navigation: `todo-comments.nvim`
 
-1. 이 폴더를 Neovim 설정 경로로 배치
-   - Linux/macOS: `~/.config/nvim`
-2. Neovim 실행 시 `lazy.nvim`이 자동 부트스트랩됨
-3. `:Mason`에서 LSP/툴 설치 상태 확인
+### UI
 
-## 환경별 가이드
+- `cyberdream`, `lualine`, `noice.nvim`, `nvim-notify`
+- `zen-mode`, `vimade`, `incline`, `nvim-highlight-colors`
 
-현재 클립보드 설정은 `lua/config/clipboard.lua`에서 **환경을 자동 감지해 분기**합니다.
+---
 
-- **WSL2**: `win32yank.exe` 사용
-- **Linux Wayland**: `wl-copy`/`wl-paste` 사용
-- **Linux X11 (fallback)**: `xclip` 사용
+## Language Support / LSP
 
-즉, WSL2/Linux(X11/Wayland)마다 설정 파일을 수동 교체하지 않아도 됩니다.
+Configured LSP servers:
 
-체크 포인트:
-- `vim.opt.clipboard = "unnamedplus"` 유지
-- 각 환경에서 필요한 바이너리(`win32yank.exe`, `wl-clipboard`, `xclip`)가 PATH에 있어야 시스템 클립보드 연동 가능
+`lua_ls`, `pyright`, `ruff`, `clangd`, `cmake`, `marksman`, `jsonls`, `yamlls`, `dockerls`, `docker_compose_language_service`, `ts_ls`, `rust_analyzer`, `taplo`, `bashls`, `tailwindcss`, `typos_lsp`, `texlab`
 
-간단 검증 팁(Neovim 내부):
+Configured formatters (`conform.nvim`):
+
+- Lua: `stylua`
+- Python: `isort`, `black`
+- JS/TS/YAML/JSON: `prettierd`, `prettier`
+- Rust: `rustfmt`
+- Shell: `shfmt`
+
+Treesitter parsers installed:
+
+`lua`, `vim`, `vimdoc`, `query`, `javascript`, `typescript`, `jsx`, `tsx`, `css`, `html`, `markdown`, `markdown_inline`, `latex`
+
+Notes:
+
+- `.sage` files are treated as Python
+- save-time formatting is enabled (`timeout_ms = 2000`, LSP fallback)
+- diagnostics virtual text is disabled globally; current-line diagnostics are shown via extmark on `CursorHold`
+
+---
+
+## Clipboard Behavior
+
+`lua/config/clipboard.lua` auto-detects environment:
+
+1. WSL → `win32yank.exe`
+2. Linux Wayland → `wl-copy`/`wl-paste`
+3. Linux X11 fallback → `xclip`
+
+Then `vim.opt.clipboard = "unnamedplus"` is applied.
+
+Additionally, `FocusGained` syncs `+` register into unnamed register (`"`).
+
+Check active provider inside Neovim:
 
 ```vim
 :lua print((vim.g.clipboard and vim.g.clipboard.name) or "clipboard provider not detected")
 ```
 
-출력된 `name` 값으로 현재 감지된 클립보드 provider를 바로 확인할 수 있습니다.
+---
 
-## 참고 파일
+## Maintenance Tips
 
-- `lazy-lock.json`: 플러그인 커밋 고정(재현성)
-- `lua/utils/debug.lua`: 디버깅 보조 함수
+1. Keep `lazy-lock.json` committed after plugin updates.
+2. Run updates regularly:
+   - `:Lazy sync`
+   - `:MasonUpdate`
+   - `:TSUpdate`
+   - `:checkhealth`
+3. Watch mapping overlap (`<leader>du` appears in both base keybinds and DAP UI mapping).
+4. Ensure external binaries exist in `PATH` (`win32yank`, `wl-copy`, `xclip`, `npm`, `make`, etc.).
+5. Stay on Neovim 0.11+ for current LSP configuration compatibility.
+
+---
+
+## License
+
+MIT (`LICENSE`)
