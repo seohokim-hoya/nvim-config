@@ -1,7 +1,5 @@
 # Neovim 설정 (Lazy.nvim 기반)
 
-TEST
-
 이 저장소는 개인용 Neovim 설정입니다. `init.lua`에서 `lua/config/*`와 `lua/plugins/*`를 불러오며, 플러그인 관리는 **lazy.nvim**을 사용합니다.
 
 ## 개요
