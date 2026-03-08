@@ -1,11 +1,8 @@
 # Neovim Config (lazy.nvim + Neovim 0.11+)
 
-[Korean Version](./README.ko.md)
-
 ---
 
-Personal Neovim configuration with modular Lua files, lazy-loaded plugins, and pinned plugin versions. 
-
+Personal Neovim configuration with modular Lua files, lazy-loaded plugins, and pinned plugin versions.
 
 - **Leader**: `,`
 - **Local leader**: `;`
@@ -132,24 +129,24 @@ Then check:
 
 > `<leader>` is `,`
 
-| Key | Action |
-|---|---|
-| `<C-j>`, `<C-k>` | next/previous diagnostic |
-| `<leader>de` | diagnostic float |
-| `<C-p>` | focus Neo-tree |
-| `<leader>fe`, `<leader>fE` | Neo-tree root/cwd explorer |
-| `<leader>ff`, `<leader>fg` | Telescope find files/live grep |
-| `<leader>fb`, `<leader>fh` | Telescope buffers/help tags |
-| `<leader>xx` | Trouble diagnostics |
-| `<leader>ghs`, `<leader>ghr`, `<leader>ghp` | stage/reset/preview hunk |
-| `<leader>gd`, `<leader>gD` | Diffview open/file history |
-| `<leader>gg`, `<leader>lg` | Neogit/LazyGit |
-| `<leader>tt`, `<leader>tT` | neotest nearest/file |
-| `<F5>`, `<F10>`, `<F11>`, `<F12>` | DAP continue/step over/into/out |
-| `<leader>db`, `<leader>dB` | toggle/conditional breakpoint |
-| `<leader>fo` | format (`:Format`) |
-| `<leader>z` | Zen mode |
-| `<leader>qs`, `<leader>ql`, `<leader>qd` | restore session/last/stop saving |
+| Key                                         | Action                           |
+| ------------------------------------------- | -------------------------------- |
+| `<C-j>`, `<C-k>`                            | next/previous diagnostic         |
+| `<leader>de`                                | diagnostic float                 |
+| `<C-p>`                                     | focus Neo-tree                   |
+| `<leader>fe`, `<leader>fE`                  | Neo-tree root/cwd explorer       |
+| `<leader>ff`, `<leader>fg`                  | Telescope find files/live grep   |
+| `<leader>fb`, `<leader>fh`                  | Telescope buffers/help tags      |
+| `<leader>xx`                                | Trouble diagnostics              |
+| `<leader>ghs`, `<leader>ghr`, `<leader>ghp` | stage/reset/preview hunk         |
+| `<leader>gd`, `<leader>gD`                  | Diffview open/file history       |
+| `<leader>gg`, `<leader>lg`                  | Neogit/LazyGit                   |
+| `<leader>tt`, `<leader>tT`                  | neotest nearest/file             |
+| `<F5>`, `<F10>`, `<F11>`, `<F12>`           | DAP continue/step over/into/out  |
+| `<leader>db`, `<leader>dB`                  | toggle/conditional breakpoint    |
+| `<leader>fo`                                | format (`:Format`)               |
+| `<leader>z`                                 | Zen mode                         |
+| `<leader>qs`, `<leader>ql`, `<leader>qd`    | restore session/last/stop saving |
 
 ---
 

@@ -154,28 +154,28 @@ return {
 	},
 
 	-- Multi-cursor
-	{
-		"smoka7/multicursors.nvim",
-		event = "VeryLazy",
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			"nvim-lua/plenary.nvim",
-			"anuvyklack/hydra.nvim",
-		},
-		keys = {
-			-- 너가 쓰던 감성 최대한 유지
-			{ "<C-n>", "<cmd>MCstart<cr>", desc = "MultiCursor: start/select" },
-
-			-- 선택된 커서들 기준으로 위/아래 추가
-			{ "<C-j>", "<cmd>MCdown<cr>", desc = "MultiCursor: add down" },
-			{ "<C-k>", "<cmd>MCup<cr>", desc = "MultiCursor: add up" },
-
-			-- 흔히 필요한 것들
-			{ "<Esc>", "<cmd>MCstop<cr>", desc = "MultiCursor: stop" },
-			{ "<leader>ma", "<cmd>MCaddCursor<cr>", desc = "MultiCursor: add cursor" },
-			{ "<leader>mu", "<cmd>MCundoCursor<cr>", desc = "MultiCursor: undo cursor" },
-		},
-	},
+	-- {
+	-- 	"smoka7/multicursors.nvim",
+	-- 	event = "VeryLazy",
+	-- 	dependencies = {
+	-- 		"nvim-treesitter/nvim-treesitter",
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		"anuvyklack/hydra.nvim",
+	-- 	},
+	-- 	keys = {
+	-- 		-- 너가 쓰던 감성 최대한 유지
+	-- 		{ "<C-n>", "<cmd>MCstart<cr>", desc = "MultiCursor: start/select" },
+	--
+	-- 		-- 선택된 커서들 기준으로 위/아래 추가
+	-- 		{ "<C-j>", "<cmd>MCdown<cr>", desc = "MultiCursor: add down" },
+	-- 		{ "<C-k>", "<cmd>MCup<cr>", desc = "MultiCursor: add up" },
+	--
+	-- 		-- 흔히 필요한 것들
+	-- 		{ "<Esc>", "<cmd>MCstop<cr>", desc = "MultiCursor: stop" },
+	-- 		{ "<leader>ma", "<cmd>MCaddCursor<cr>", desc = "MultiCursor: add cursor" },
+	-- 		{ "<leader>mu", "<cmd>MCundoCursor<cr>", desc = "MultiCursor: undo cursor" },
+	-- 	},
+	-- },
 
 	-- Surround editing
 	{
