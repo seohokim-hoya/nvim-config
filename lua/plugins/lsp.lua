@@ -33,6 +33,10 @@ local lsp_servers = {
 	"tailwindcss",
 	"typos_lsp",
 	"texlab",
+
+	-- DotNet & F#
+	"csharp_ls",
+	"fsautocomplete",
 }
 
 local mason_tools = {
@@ -43,6 +47,8 @@ local mason_tools = {
 	"prettierd",
 	"prettier",
 	"clang-format",
+	"csharpier",
+	"fantomas",
 }
 
 local formatters_by_ft = {
@@ -59,6 +65,9 @@ local formatters_by_ft = {
 	cpp = { "clang-format" },
 	sh = { "shfmt" },
 	rust = { "rustfmt" },
+
+	cs = { "csharpier" },
+	fsharp = { "fantomas" },
 }
 
 local server_configs = {
