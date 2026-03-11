@@ -2,9 +2,10 @@ return {
 	"lervag/vimtex",
 	lazy = false,
 	init = function()
-		vim.g.vimtex_view_method = "sioyek" -- "general"
+		vim.g.vimtex_view_method = "sioyek"
 		vim.g.vimtex_view_sioyek_exe = "/mnt/c/Tools/Sioyek/sioyek.exe"
-		vim.g.vimtex_callback_progpath = "wsl nvim"
+		-- Use the Windows executable explicitly so Sioyek does not depend on PATH resolution for `wsl`.
+		vim.g.vimtex_callback_progpath = "C:/Windows/System32/wsl.exe nvim"
 		-- vim.g.vimtex_compiler_method = "latexmk"
 		-- vim.g.vimtex_view_general_options = "-reuse-instance -forward-search @tex @line @pdf"
 	end,
