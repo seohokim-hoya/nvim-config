@@ -28,6 +28,9 @@ return {
 			"markdown",
 			"markdown_inline",
 			"latex",
+
+			"regex",
+			"bash",
 		})
 
 		local group = vim.api.nvim_create_augroup("UserTreesitter", { clear = true })
