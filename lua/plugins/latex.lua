@@ -2,10 +2,11 @@ return {
 	"lervag/vimtex",
 	lazy = false,
 	init = function()
-		vim.g.vimtex_view_method = "general" -- | "zathura"
-		vim.g.vimtex_view_general_viewer = "/mnt/c/Users/seoho/AppData/Local/SumatraPDF/SumatraPDF.exe" -- "SumatraPDF"
-		vim.g.vimtex_compiler_method = "latexmk"
-		vim.g.vimtex_view_general_options = "-reuse-instance -forward-search @tex @line @pdf"
+		vim.g.vimtex_view_method = "sioyek" -- "general"
+		vim.g.vimtex_view_sioyek_exe = "/mnt/c/Tools/Sioyek/sioyek.exe"
+		vim.g.vimtex_callback_progpath = "wsl nvim"
+		-- vim.g.vimtex_compiler_method = "latexmk"
+		-- vim.g.vimtex_view_general_options = "-reuse-instance -forward-search @tex @line @pdf"
 	end,
 	-- ft = { "tex" },
 	-- config = function()
