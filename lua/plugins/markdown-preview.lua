@@ -8,12 +8,13 @@ return {
 		end,
 		init = function()
 			vim.g.mkdp_echo_preview_url = 1
-			vim.g.mkdp_browserfunc = "MkdpOpenWSL"
+			vim.g.mkdp_browserfunc = "MkdpOpenWSLChromeIncognito"
+
 			vim.cmd([[
-	     function! MkdpOpenWSL(url)
-	       execute 'silent !wslview ' . shellescape(a:url)
-	     endfunction
-	   ]])
+      function! MkdpOpenWSLChromeIncognito(url)
+        call system('powershell.exe -NoProfile -Command "Start-Process chrome.exe -ArgumentList ''--new-window'',''--incognito'',''' . a:url . '''"')
+      endfunction
+    ]])
 		end,
 		keys = {
 			{ "<leader>mp", "<cmd>MarkdownPreviewToggle<cr>", desc = "Markdown Preview" },
