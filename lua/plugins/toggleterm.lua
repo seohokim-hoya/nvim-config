@@ -5,7 +5,7 @@ return {
 		require("toggleterm").setup({
 			shade_terminal = false,
 			size = function()
-				return math.floor(vim.o.columns * 0.95)
+				return math.floor(vim.o.columns * 0.97)
 			end,
 			open_mapping = [[<S-A-H>]],
 			direction = "float",
