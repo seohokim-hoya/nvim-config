@@ -7,7 +7,7 @@ return {
 			size = function()
 				return math.floor(vim.o.columns * 0.97)
 			end,
-			open_mapping = [[<S-A-H>]],
+			open_mapping = [[<C-\>]],
 			direction = "float",
 			start_in_insert = true,
 			persist_mode = true,
