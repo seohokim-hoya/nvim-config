@@ -71,6 +71,12 @@ local formatters_by_ft = {
 }
 
 local server_configs = {
+	clangd = {
+		init_options = {
+			fallbackFlags = { "-std=c++23" },
+		},
+	},
+
 	lua_ls = {
 		settings = {
 			Lua = {
