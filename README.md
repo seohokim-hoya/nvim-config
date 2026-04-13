@@ -189,7 +189,8 @@ Configured formatters (`conform.nvim`):
 
 - Lua: `stylua`
 - Python: `isort`, `black`
-- JS/TS/YAML/JSON: `prettierd`, `prettier`
+- JS/TS/JSX/TSX: local `eslint_d` (when available) -> `prettierd` -> `prettier`
+- JSON/YAML/Markdown: `prettierd`, `prettier`
 - Rust: `rustfmt`
 - Shell: `shfmt`
 
@@ -200,7 +201,9 @@ Treesitter parsers installed:
 Notes:
 
 - `.sage` files are treated as Python
-- save-time formatting is enabled (`timeout_ms = 2000`, LSP fallback)
+- save-time formatting is enabled
+- JS/TS/JSX/TSX wait for synchronous external formatting on save (`timeout_ms = 3000`, no LSP fallback)
+- web formatter errors or missing formatters are surfaced via notifications
 - diagnostics virtual text is disabled globally; current-line diagnostics are shown via extmark on `CursorHold`
 
 ---

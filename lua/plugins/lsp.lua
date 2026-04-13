@@ -44,6 +44,7 @@ local mason_tools = {
 	"shfmt",
 	"black",
 	"isort",
+	"eslint_d",
 	"prettierd",
 	"prettier",
 	"clang-format",
@@ -51,12 +52,49 @@ local mason_tools = {
 	"fantomas",
 }
 
+local web_filetypes = {
+	javascript = true,
+	javascriptreact = true,
+	typescript = true,
+	typescriptreact = true,
+}
+
+local function web_formatters(bufnr)
+	local conform = require("conform")
+	local formatters = {}
+	local prettifier = conform.get_formatter_info("prettierd", bufnr).available and "prettierd" or "prettier"
+
+	if conform.get_formatter_info("eslint_d", bufnr).available then
+		formatters[#formatters + 1] = "eslint_d"
+	end
+
+	formatters[#formatters + 1] = prettifier
+	return formatters
+end
+
+local function format_opts(bufnr)
+	local ft = vim.bo[bufnr].filetype
+	if web_filetypes[ft] then
+		return {
+			timeout_ms = 3000,
+			lsp_format = "never",
+		}
+	end
+
+	return {
+		timeout_ms = 2000,
+		lsp_format = "fallback",
+	}
+end
+
 local formatters_by_ft = {
 	lua = { "stylua" },
 	python = { "isort", "black" },
 
-	javascript = { "prettierd", "prettier", stop_after_first = true },
-	typescript = { "prettierd", "prettier", stop_after_first = true },
+	javascript = web_formatters,
+	javascriptreact = web_formatters,
+	typescript = web_formatters,
+	typescriptreact = web_formatters,
 	json = { "prettierd", "prettier", stop_after_first = true },
 	yaml = { "prettierd", "prettier", stop_after_first = true },
 	markdown = { "prettierd", "prettier", stop_after_first = true },
@@ -121,7 +159,7 @@ local server_configs = {
 			},
 		},
 		on_attach = function(client)
-			-- JS/TS formatting is handled by conform (prettierd/prettier)
+			-- JS/TS formatting is handled by conform (eslint_d/prettierd/prettier)
 			client.server_capabilities.documentFormattingProvider = false
 		end,
 	},
@@ -313,11 +351,25 @@ return {
 			default_format_opts = {
 				lsp_format = "fallback",
 			},
+			notify_on_error = true,
+			notify_no_formatters = true,
+			formatters = {
+				eslint_d = {
+					require_cwd = true,
+					condition = function(_, ctx)
+						return vim.fs.find("node_modules/.bin/eslint_d", {
+							upward = true,
+							path = ctx.dirname,
+							limit = 1,
+						})[1] ~= nil
+					end,
+				},
+			},
 			format_on_save = function(bufnr)
 				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
 					return
 				end
-				return { timeout_ms = 2000 }
+				return format_opts(bufnr)
 			end,
 		},
 		config = function(_, opts)
@@ -335,7 +387,9 @@ return {
 
 				require("conform").format({
 					async = false,
-					lsp_format = "fallback",
+					bufnr = 0,
+					lsp_format = format_opts(0).lsp_format,
+					timeout_ms = format_opts(0).timeout_ms,
 					range = range,
 				})
 			end, { range = true })
